@@ -1,0 +1,236 @@
+<title>Vítkův rozcestník</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Karla:wght@400;500;700&family=Caveat:wght@600;700&display=swap');
+
+  :root{
+    --board:#a97c50;
+    --board-dark:#8a6340;
+    --frame:#5c4530;
+    --ink:#241c14;
+    --ink-soft:#5a4a37;
+    --coral:#ff6b52;
+    --coral-ink:#3a0f06;
+    --teal:#1c8b83;
+    --teal-ink:#eafaf7;
+    --mustard:#f2b632;
+    --mustard-ink:#3a2600;
+    --plum:#7c5cad;
+    --plum-ink:#f6effc;
+    --tape:#eee4c8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Karla', 'Segoe UI', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.14) 1px, transparent 1.6px) 0 0/14px 14px,
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.10), transparent 55%),
+      linear-gradient(180deg, var(--board), var(--board-dark));
+    border:14px solid var(--frame);
+    outline:1px solid #3d2c1c;
+    outline-offset:-18px;
+  }
+  a{color:inherit;}
+  :focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:4.5rem 2rem 5rem;
+  }
+
+  header{
+    text-align:center;
+    margin-bottom:1rem;
+  }
+  .plaque{
+    display:inline-block;
+    background:var(--tape);
+    padding:1.1rem 2.4rem;
+    border-radius:3px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.28), 0 2px 0 rgba(255,255,255,0.3) inset;
+    transform:rotate(-1.3deg);
+    position:relative;
+  }
+  .plaque::before, .plaque::after{
+    content:"";
+    position:absolute;
+    width:16px;height:16px;
+    border-radius:50%;
+    top:-8px;
+    background:radial-gradient(circle at 35% 30%, #e8433a, #8f1710 75%);
+    box-shadow:0 3px 4px rgba(0,0,0,0.4);
+  }
+  .plaque::before{left:14px;}
+  .plaque::after{right:14px;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:clamp(2rem, 5vw, 3rem);
+    margin:0;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+  }
+  .subtitle{
+    display:block;
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    font-size:1.5rem;
+    color:var(--ink-soft);
+    margin-top:2.6rem;
+    transform:rotate(1deg);
+  }
+
+  .tape-label{
+    display:inline-block;
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:1.5rem;
+    background:var(--tape);
+    padding:0.2rem 1.2rem 0.35rem;
+    box-shadow:0 4px 8px rgba(0,0,0,0.22);
+    transform:rotate(-2deg);
+    margin:3.4rem 0 1.6rem 0.5rem;
+  }
+  section:first-of-type .tape-label{margin-top:4rem;}
+
+  .board{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:1.6rem 1.3rem;
+    padding:0 0.4rem;
+  }
+
+  .card{
+    display:block;
+    background:var(--card-bg);
+    color:var(--card-ink);
+    padding:1.3rem 1.3rem 1.5rem;
+    border-radius:2px;
+    text-decoration:none;
+    box-shadow:0 8px 16px rgba(0,0,0,0.28);
+    position:relative;
+    transform:rotate(var(--rot));
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card:hover, .card:focus-visible{
+    transform:rotate(0deg) translateY(-4px) scale(1.02);
+    box-shadow:0 14px 24px rgba(0,0,0,0.34);
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-9px; left:50%; transform:translateX(-50%);
+    width:15px;height:15px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff7dd, #d9a913 70%, #8a6a06);
+    box-shadow:0 3px 5px rgba(0,0,0,0.4);
+  }
+  .card h3{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:1.2rem;
+    margin:0.4rem 0 0.4rem;
+    line-height:1.2;
+  }
+  .card p{
+    margin:0;
+    font-size:0.92rem;
+    line-height:1.4;
+    opacity:0.92;
+  }
+
+  .card:nth-child(3n+1){--rot:-2.2deg;}
+  .card:nth-child(3n+2){--rot:1.6deg;}
+  .card:nth-child(3n+3){--rot:-0.8deg;}
+
+  .coral{--card-bg:var(--coral); --card-ink:var(--coral-ink);}
+  .teal{--card-bg:var(--teal); --card-ink:var(--teal-ink);}
+  .mustard{--card-bg:var(--mustard); --card-ink:var(--mustard-ink);}
+  .plum{--card-bg:var(--plum); --card-ink:var(--plum-ink);}
+
+  footer{
+    margin-top:4rem;
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:1.3rem;
+    color:var(--ink-soft);
+    transform:rotate(-0.6deg);
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="plaque">
+      <h1>Vítkův rozcestník</h1>
+    </div>
+    <span class="subtitle">11 projektů, co jsem si postavil</span>
+  </header>
+
+  <section>
+    <span class="tape-label">pro rodinu</span>
+    <div class="board">
+      <a class="card coral" href="https://vitekmaca.github.io/readHP/" target="_blank" rel="noopener">
+        <h3>Kámen mudrců</h3>
+        <p>Bradavice k předčítání, kapitolu po kapitole</p>
+      </a>
+      <a class="card teal" href="https://vitekmaca.github.io/Pokedex/" target="_blank" rel="noopener">
+        <h3>Ashův Pokédex</h3>
+        <p>Kdo je ten Pokémon? Prohlížečka pro trenéry</p>
+      </a>
+      <a class="card mustard" href="https://vitekmaca.github.io/tata-banka/" target="_blank" rel="noopener">
+        <h3>Táta banka</h3>
+        <p>Kapesné a úroky pro malé střadatele</p>
+      </a>
+      <a class="card plum" href="https://vitekmaca.github.io/pohadky-soundboard/" target="_blank" rel="noopener">
+        <h3>Pohádkový box</h3>
+        <p>Mačkni a poslouchej — pohádky na dobrou noc</p>
+      </a>
+      <a class="card coral" href="https://vitekmaca.github.io/ovecky/" target="_blank" rel="noopener">
+        <h3>Počítání oveček</h3>
+        <p>Jedna ovečka, druhá ovečka... usínání s animací</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <span class="tape-label">Švýcarsko</span>
+    <div class="board">
+      <a class="card teal" href="https://vitekmaca.github.io/camping-schweiz/" target="_blank" rel="noopener">
+        <h3>Camping Switzerland</h3>
+        <p>Kempy po celém Švýcarsku, se stavem návštěv</p>
+      </a>
+      <a class="card mustard" href="https://vitekmaca.github.io/camping-dennik/" target="_blank" rel="noopener">
+        <h3>Camping deník</h3>
+        <p>Kam jsme jeli stanovat a jak to bylo</p>
+      </a>
+      <a class="card plum" href="https://vitekmaca.github.io/spielplaetze-zuerich/" target="_blank" rel="noopener">
+        <h3>Hřiště &amp; grilování — Curych</h3>
+        <p>Mapa hřišť a grilovacích míst po Curychu</p>
+      </a>
+      <a class="card coral" href="https://vitekmaca.github.io/swiss-deals/" target="_blank" rel="noopener">
+        <h3>Švýcarské akce</h3>
+        <p>Přehled aktuálních slev a akcí</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <span class="tape-label">nástroje</span>
+    <div class="board">
+      <a class="card teal" href="https://vitekmaca.github.io/chess-clock/" target="_blank" rel="noopener">
+        <h3>Šachové hodiny</h3>
+        <p>Digitální hodiny na šachovou partii</p>
+      </a>
+      <a class="card mustard" href="https://vitekmaca.github.io/casovac/" target="_blank" rel="noopener">
+        <h3>Čas běží</h3>
+        <p>Jednoduchý odpočet, když je potřeba hlídat čas</p>
+      </a>
+    </div>
+  </section>
+
+  <footer>~ vitekmaca, 2026 ~</footer>
+</div>
